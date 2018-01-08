@@ -318,6 +318,31 @@ WasmModule.prototype.toBinary = function(options) {
   }
 };
 
+WasmModule.prototype.toC = function() {
+  var writeModuleResult_addr = Module._wabt_write_c_module(this.module_addr);
+
+  var result =
+      Module._wabt_write_module_result_get_result(writeModuleResult_addr);
+
+  try {
+    if (result !== WABT_OK) {
+      throw new Error('toC failed.');
+    }
+
+    var outputBuffer = new OutputBuffer(
+        Module._wabt_write_module_result_release_output_buffer(
+            writeModuleResult_addr));
+
+    return outputBuffer.toString();
+
+  } finally {
+    if (outputBuffer) {
+      outputBuffer.destroy();
+    }
+    Module._wabt_destroy_write_module_result(writeModuleResult_addr);
+  }
+};
+
 WasmModule.prototype.destroy = function() {
   Module._wabt_destroy_module(this.module_addr);
   if (this.lexer) {

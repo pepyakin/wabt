@@ -35,6 +35,7 @@
 #include "src/wast-lexer.h"
 #include "src/wast-parser.h"
 #include "src/wat-writer.h"
+#include "src/c-writer.h"
 
 struct WabtParseWatResult {
   wabt::Result result;
@@ -143,6 +144,18 @@ WabtWriteModuleResult* wabt_write_text_module(wabt::Module* module,
   wabt::MemoryStream stream;
   WabtWriteModuleResult* result = new WabtWriteModuleResult();
   result->result = WriteWat(&stream, module, &options);
+  if (result->result == wabt::Result::Ok) {
+    result->buffer = stream.ReleaseOutputBuffer();
+  }
+  return result;
+}
+
+WabtWriteModuleResult* wabt_write_c_module(wabt::Module* module) {
+  wabt::WriteCOptions options;
+
+  wabt::MemoryStream stream;
+  WabtWriteModuleResult* result = new WabtWriteModuleResult();
+  result->result = WriteC(&stream, &stream, "wasm.h", module, &options);
   if (result->result == wabt::Result::Ok) {
     result->buffer = stream.ReleaseOutputBuffer();
   }
