@@ -82,6 +82,8 @@ function compile() {
     var module = wabt.parseWat('test.wast', watEditor.getValue());
     module.resolveNames();
     module.validate();
+    module.generateNames();
+    module.applyNames();
     var cOutput = module.toC();
     outputEl.textContent = cOutput;
     // binaryBuffer = binaryOutput.buffer;
