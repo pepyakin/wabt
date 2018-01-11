@@ -255,6 +255,8 @@ add_library(libwabt STATIC
   src/stream.cc
   src/tracing.cc
   src/utf8.cc
+
+  src/emscripten-helpers.cc
 )
 set_target_properties(libwabt PROPERTIES OUTPUT_NAME wabt)
 
